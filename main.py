@@ -59,6 +59,8 @@ memory = ConversationBufferMemory()
 print("\nKnowledge Chatbot Started")
 print("Type exit to quit\n")
 
+llm = OllamaLLM(model="qwen2.5:7b")  # Define 'llm' here
+
 while True:
 
     question = input("You: ")
@@ -86,7 +88,7 @@ Question:
 {question}
 """
 
-    answer = llm.invoke(prompt, memory=memory)  # Fix: Added 'llm' definition
+    answer = llm.invoke(prompt, memory=memory)
 
     print("\nBot:")
     print(answer)
