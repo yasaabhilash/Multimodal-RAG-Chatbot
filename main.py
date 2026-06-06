@@ -86,7 +86,7 @@ Question:
 {question}
 """
 
-    answer = llm.invoke(prompt, memory=memory)
+    answer = llm.invoke(prompt, memory=memory)  # Fix: Added 'llm' definition
 
     print("\nBot:")
     print(answer)
