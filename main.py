@@ -8,6 +8,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_ollama import OllamaLLM
+from langchain_community.memory import ConversationBufferMemory
 
 print("Loading PDFs...")
 
@@ -53,11 +54,7 @@ retriever = db.as_retriever(
     search_kwargs={"k": 3}
 )
 
-print("Loading Ollama model...")
-
-llm = OllamaLLM(
-    model="qwen2.5:7b"
-)
+memory = ConversationBufferMemory()
 
 print("\nKnowledge Chatbot Started")
 print("Type exit to quit\n")
@@ -69,7 +66,7 @@ while True:
     if question.lower() == "exit":
         break
 
-    docs = retriever.invoke(question)
+    docs = retriever.invoke(question, memory=memory)
 
     context = "\n\n".join(
         [doc.page_content for doc in docs]
@@ -89,7 +86,7 @@ Question:
 {question}
 """
 
-    answer = llm.invoke(prompt)
+    answer = llm.invoke(prompt, memory=memory)
 
     print("\nBot:")
     print(answer)
