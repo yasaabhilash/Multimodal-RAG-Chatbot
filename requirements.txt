@@ -1,3 +1,5 @@
+fastapi
+uvicorn
 langchain
 langchain-community
 langchain-text-splitters
@@ -6,3 +8,4 @@ faiss-cpu
 pypdf
 sentence-transformers
 ollama
+python-dotenv
