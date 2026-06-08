@@ -131,7 +131,7 @@ llm = OllamaLLM(model="qwen2.5:7b")  # Define 'llm' here
 
 while True:
 
-    question = input("You: ")
+    question = input("Hey there! How can I help you today? ")
 
     if question.lower() == "exit":
         break
