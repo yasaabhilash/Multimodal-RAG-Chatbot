@@ -9,3 +9,5 @@ pypdf
 sentence-transformers
 ollama
 python-dotenv
+python-docx
+openpyxl
