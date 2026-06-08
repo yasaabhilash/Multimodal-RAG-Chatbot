@@ -11,10 +11,6 @@ from langchain_community.document_loaders import (
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
-from langchain_core.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_community.chat_models import ChatOllama
-import tempfile
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,7 +22,6 @@ class RagService:
         self.retriever = None
         self.chain = None
         self.embeddings = OllamaEmbeddings(model="nomic-embed-text")
-        self.llm = ChatOllama(model="llama3", temperature=0.0)
         
         # Initialize the vector store if it exists
         self._init_vectorstore()
@@ -102,40 +97,10 @@ class RagService:
             # Create retriever
             self.retriever = self.vectorstore.as_retriever()
             
-            # Create RAG chain with strict prompt
-            self._create_rag_chain()
-            
             logger.info(f"Successfully processed {len(file_paths)} documents")
         except Exception as e:
             logger.error(f"Error processing documents: {str(e)}")
             raise
-    
-    def _create_rag_chain(self):
-        """Create a strict RAG chain that avoids hallucinations"""
-        # Strict prompt to avoid hallucinations
-        prompt_template = """
-        You are an expert assistant with access to specific document information.
-        Only answer questions based on the provided context. If the answer is not 
-        explicitly stated in the context, respond with: "I don't have enough information 
-        to answer this question based on the provided documents."
-        
-        Context:
-        {context}
-        
-        Question: {question}
-        
-        Answer:
-        """
-        
-        prompt = PromptTemplate.from_template(prompt_template)
-        
-        # Create chain
-        self.chain = (
-            {"context": self.retriever, "question": RunnablePassthrough()}
-            | prompt
-            | self.llm
-            | StrOutputParser()
-        )
     
     def query(self, question: str) -> str:
         """Query the RAG system"""

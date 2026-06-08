@@ -1,7 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Form
-from fastapi.responses import JSONResponse
 import os
-from pathlib import Path
 from typing import List
 import logging
 
@@ -11,12 +9,6 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="RAG Chatbot API")
 
-# Import the RagService
-from path.to.backend.services.rag_service import RagService
-
-# Initialize the RAG service
-rag_service = RagService()
-
 @app.get("/health")
 async def health():
     return {"status": "ok"}
@@ -24,49 +16,27 @@ async def health():
 @app.post("/upload")
 async def upload_files(files: List[UploadFile] = File(...)):
     """Upload multiple files for processing"""
-    try:
-        file_paths = []
-        for file in files:
-            # Create uploads directory if it doesn't exist
-            os.makedirs("uploads", exist_ok=True)
-            
-            # Save file
-            file_path = f"uploads/{file.filename}"
-            with open(file_path, "wb") as buffer:
-                content = await file.read()
-                buffer.write(content)
-            
-            file_paths.append(file_path)
+    file_paths = [os.path.join("uploads", file.filename) for file in files]
+    os.makedirs("uploads", exist_ok=True)
+    
+    for file, file_path in zip(files, file_paths):
+        with open(file_path, "wb") as buffer:
+            content = await file.read()
+            buffer.write(content)
         
-        # Process files with RAG service
-        rag_service.process_documents(file_paths)
-        
-        return JSONResponse(
-            status_code=200,
-            content={"message": f"Successfully processed {len(files)} files"}
-        )
-    except Exception as e:
-        logger.error(f"Error processing files: {str(e)}")
-        return JSONResponse(
-            status_code=500,
-            content={"error": str(e)}
-        )
+    from path.to.backend.services.rag_service import RagService
+    rag_service = RagService()
+    rag_service.process_documents(file_paths)
+    
+    return {"message": f"Successfully processed {len(files)} files"}
 
 @app.post("/query")
 async def query_rag(query: str = Form(...)):
     """Query the RAG system"""
-    try:
-        response = rag_service.query(query)
-        return JSONResponse(
-            status_code=200,
-            content={"response": response}
-        )
-    except Exception as e:
-        logger.error(f"Error processing query: {str(e)}")
-        return JSONResponse(
-            status_code=500,
-            content={"error": str(e)}
-        )
+    from path.to.backend.services.rag_service import RagService
+    rag_service = RagService()
+    response = rag_service.query(query)
+    return {"response": response}
 
 if __name__ == "__main__":
     import uvicorn
