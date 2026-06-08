@@ -13,7 +13,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
 from langchain_community.chat_models import ChatOllama
 import tempfile
 
@@ -107,7 +106,6 @@ class RagService:
             self._create_rag_chain()
             
             logger.info(f"Successfully processed {len(file_paths)} documents")
-            
         except Exception as e:
             logger.error(f"Error processing documents: {str(e)}")
             raise
