@@ -5,3 +5,34 @@ __pycache__/
 .aider*
 uploads/
 vectorstore/
+
+
+# Python virtual environments
+venv/
+venv__3.11/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+.env.*
+
+# Node modules
+node_modules/
+
+# User-generated data
+backend/chat_sessions/
+backend/documents/
+backend/images/uploaded/
+backend/metadata/
+
+# Generated indexes and databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/

@@ -1,13 +1,9 @@
-fastapi
-uvicorn
 langchain
 langchain-community
 langchain-text-splitters
-langchain-ollama
+sentence-transformers
 faiss-cpu
 pypdf
-sentence-transformers
-ollama
-python-dotenv
-python-docx
+docx2txt
 openpyxl
+unstructured
